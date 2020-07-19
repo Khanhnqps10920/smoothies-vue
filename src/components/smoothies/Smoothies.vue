@@ -25,9 +25,9 @@
               </li>
             </ul>
           </div>
-          <span class="btn-floating btn-large halfway-fab indigo darken-1">
+          <span class="btn-floating btn-large halfway-fab purple darken-1">
             <router-link :to="{
-                name: 'editSmoothie',
+                name: 'editSmoothie'
               }">
               <i class="material-icons edit">edit</i>
             </router-link>
@@ -96,5 +96,9 @@ export default {
 
 .smoothies .spinner-layer {
   border-color: #9c27b0;
+}
+
+.smoothies .card {
+  min-height: 250px;
 }
 </style>

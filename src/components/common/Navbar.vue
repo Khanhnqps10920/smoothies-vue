@@ -12,9 +12,15 @@
         <li>
           <router-link to="/gmap">Gmap</router-link>
         </li>
+        <li>
+          <router-link to="/login">Login</router-link>
+        </li>
+        <li>
+          <router-link to="/register">Register</router-link>
+        </li>
       </ul>
 
-      <button class="btn-add btn-floating btn-large indigo darken-1 halfway-fab">
+      <button class="btn-add btn-floating btn-large purple darken-1 halfway-fab">
         <i class="material-icons">add</i>
       </button>
     </div>

@@ -16,7 +16,7 @@ export default new Vuex.Store({
         feedBack: null,
         newMessage: null,
         listMessage: [],
-        loading: true
+        chatActive: false
       }),
       // getters
       getters: {
@@ -38,7 +38,11 @@ export default new Vuex.Store({
         fetchListMessage: (state, payload) => {
           state.listMessage.push(payload);
           state.loading = false;
+        },
+        setActive: state => {
+          state.chatActive = !state.chatActive;
         }
+
       },
       // actions
       actions: {
@@ -80,6 +84,9 @@ export default new Vuex.Store({
           } catch (e) {
             console.log(e);
           }
+        },
+        setActive: ({ commit }) => {
+          commit("setActive");
         }
       }
     },
@@ -125,7 +132,26 @@ export default new Vuex.Store({
         }
       },
 
-    }
+    },
+    // auth
+    auth: {
+      namespaced: true,
+      state: () => ({
+        user: null,
+        feedback: null
+      }),
+      mutations: {
+        SET_FEED_BACK: (state, message) => {
+          state.feedback = message;
+        }
+      },
+      actions: {
+        setFeedback: ({ commit }, payload) => {
+          commit("SET_FEED_BACK", payload);
+        }
+      }
+
+    },
 
   }
 });
