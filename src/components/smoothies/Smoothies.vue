@@ -1,28 +1,37 @@
 <template>
   <div class="smoothies container">
-    <div class="row">
-      <div class="col s4">
-        <div class="card">
-          <div class="card-content">
-            <h2 class="indigo-text">title</h2>
-            <ul class="ingredients">
-              <li>
-                <span class="chip">chipp</span>
-              </li>
-            </ul>
-          </div>
+    <div class="preloader-wrapper big active" v-if="loading">
+      <div class="spinner-layer">
+        <div class="circle-clipper left">
+          <div class="circle"></div>
+        </div>
+        <div class="gap-patch">
+          <div class="circle"></div>
+        </div>
+        <div class="circle-clipper right">
+          <div class="circle"></div>
         </div>
       </div>
-      <div class="col s4">
+    </div>
+    <div class="row" v-else>
+      <div class="col s4" v-for="smoothie in smoothies" :key="smoothie.id">
         <div class="card">
           <div class="card-content">
-            <h2 class="indigo-text">title</h2>
+            <i class="material-icons delete" @click="deleteSmoothie(smoothie.id)">delete</i>
+            <h2 class="indigo-text">{{ smoothie.title }}</h2>
             <ul class="ingredients">
-              <li>
-                <span class="chip">chipp</span>
+              <li v-for="(ingredient,index) in smoothie.ingredients" :key="index">
+                <span class="chip">{{ ingredient }}</span>
               </li>
             </ul>
           </div>
+          <span class="btn-floating btn-large halfway-fab indigo darken-1">
+            <router-link :to="{
+                name: 'editSmoothie',
+              }">
+              <i class="material-icons edit">edit</i>
+            </router-link>
+          </span>
         </div>
       </div>
     </div>
@@ -30,18 +39,24 @@
 </template>
 
 <script>
-import database from "../../firebase/init";
+import { mapState, mapActions } from "vuex";
 
 export default {
+  // data
+  data() {
+    return {};
+  },
+  // computed
+  computed: {
+    ...mapState("smoothies", ["feedback", "smoothies", "loading"])
+  },
+  // methods
+  methods: {
+    ...mapActions("smoothies", ["fetchSmoothies"])
+  },
+  // created
   created() {
-    const smoothiesRef = database.collection("smoothies");
-    smoothiesRef.get().then(snapShot => {
-      const dataArr = snapShot.docs.map(doc => {
-        return doc.data();
-      });
-
-      console.log(dataArr);
-    });
+    this.fetchSmoothies();
   }
 };
 </script>
@@ -63,5 +78,23 @@ export default {
 
 .smoothies .ingredients li {
   display: inline-block;
+}
+
+.smoothies i.delete {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  cursor: pointer;
+  color: #aaa;
+}
+
+.smoothies .preloader-wrapper {
+  margin: 100px auto;
+  display: flex;
+  justify-content: center;
+}
+
+.smoothies .spinner-layer {
+  border-color: #9c27b0;
 }
 </style>

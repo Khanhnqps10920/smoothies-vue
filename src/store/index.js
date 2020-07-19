@@ -7,6 +7,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
 
   modules: {
+    // chat
     chat: {
       namespaced: true,
       // state
@@ -41,16 +42,24 @@ export default new Vuex.Store({
       },
       // actions
       actions: {
-        changeName: ({ commit }, payload) => {
+        changeName: ({
+          commit
+        }, payload) => {
           commit("changeName", payload);
         },
-        changeFeedBack: ({ commit }, payload) => {
+        changeFeedBack: ({
+          commit
+        }, payload) => {
           commit("changeFeedBack", payload);
         },
-        changeMessage: ({ commit }, payload) => {
+        changeMessage: ({
+          commit
+        }, payload) => {
           commit("changeMessage", payload);
         },
-        fetchListMessage: ({ commit }) => {
+        fetchListMessage: ({
+          commit
+        }) => {
           console.log(commit, database);
           // watching for database by using docchanges 
           try {
@@ -73,6 +82,50 @@ export default new Vuex.Store({
           }
         }
       }
+    },
+    // smoothie
+    smoothies: {
+      namespaced: true,
+      state: () => ({
+        feedback: null,
+        smoothies: [],
+        loading: true
+      }),
+      mutations: {
+        FETCH_SMOOTHIES_SUCCESS: (state, payload) => {
+          state.smoothies = [...payload];
+          state.loading = false;
+        },
+        FETCH_SMOOTHIES_FAIL: (state, payload) => {
+          state.feedBack = payload;
+        }
+      },
+      actions: {
+        fetchSmoothies: ({
+          commit
+        }) => {
+
+          // get collections
+
+          database.collection("smoothies")
+            .get()
+            .then(snapShot => {
+              const smoothies = snapShot.docs.map(doc => {
+                return {
+                  id: doc.id,
+                  ...doc.data()
+                }
+
+
+              });
+              commit("FETCH_SMOOTHIES_SUCCESS", smoothies);
+            }).catch(e => {
+              commit("FETCH_SMOOTHIES_FAIL", e.message);
+            });
+        }
+      },
+
     }
+
   }
 });
