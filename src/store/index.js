@@ -5,7 +5,6 @@ import database from "../firebase/init";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-
   modules: {
     // chat
     chat: {
@@ -16,7 +15,7 @@ export default new Vuex.Store({
         feedBack: null,
         newMessage: null,
         listMessage: [],
-        chatActive: false
+        chatActive: false,
       }),
       // getters
       getters: {
@@ -39,33 +38,24 @@ export default new Vuex.Store({
           state.listMessage.push(payload);
           state.loading = false;
         },
-        setActive: state => {
+        setActive: (state) => {
           state.chatActive = !state.chatActive;
-        }
-
+        },
       },
       // actions
       actions: {
-        changeName: ({
-          commit
-        }, payload) => {
+        changeName: ({ commit }, payload) => {
           commit("changeName", payload);
         },
-        changeFeedBack: ({
-          commit
-        }, payload) => {
+        changeFeedBack: ({ commit }, payload) => {
           commit("changeFeedBack", payload);
         },
-        changeMessage: ({
-          commit
-        }, payload) => {
+        changeMessage: ({ commit }, payload) => {
           commit("changeMessage", payload);
         },
-        fetchListMessage: ({
-          commit
-        }) => {
+        fetchListMessage: ({ commit }) => {
           console.log(commit, database);
-          // watching for database by using docchanges 
+          // watching for database by using docchanges
           try {
             // let ref = database.collection("messages").orderBy("timestamp");
             // ref.onSnapshot(snapShot => {
@@ -87,8 +77,8 @@ export default new Vuex.Store({
         },
         setActive: ({ commit }) => {
           commit("setActive");
-        }
-      }
+        },
+      },
     },
     // smoothie
     smoothies: {
@@ -96,7 +86,7 @@ export default new Vuex.Store({
       state: () => ({
         feedback: null,
         smoothies: [],
-        loading: true
+        loading: true,
       }),
       mutations: {
         FETCH_SMOOTHIES_SUCCESS: (state, payload) => {
@@ -105,53 +95,62 @@ export default new Vuex.Store({
         },
         FETCH_SMOOTHIES_FAIL: (state, payload) => {
           state.feedBack = payload;
-        }
+        },
       },
       actions: {
-        fetchSmoothies: ({
-          commit
-        }) => {
-
+        fetchSmoothies: ({ commit }) => {
           // get collections
 
-          database.collection("smoothies")
+          database
+            .collection("smoothies")
             .get()
-            .then(snapShot => {
-              const smoothies = snapShot.docs.map(doc => {
+            .then((snapShot) => {
+              const smoothies = snapShot.docs.map((doc) => {
                 return {
                   id: doc.id,
-                  ...doc.data()
-                }
-
-
+                  ...doc.data(),
+                };
               });
               commit("FETCH_SMOOTHIES_SUCCESS", smoothies);
-            }).catch(e => {
+            })
+            .catch((e) => {
               commit("FETCH_SMOOTHIES_FAIL", e.message);
             });
-        }
+        },
       },
-
     },
     // auth
     auth: {
       namespaced: true,
       state: () => ({
         user: null,
-        feedback: null
+        feedback: null,
+        isLogin: false,
       }),
       mutations: {
         SET_FEED_BACK: (state, message) => {
           state.feedback = message;
-        }
+        },
+        SET_USER: (state, user) => {
+          state.user = user;
+        },
+        SET_LOGIN_IN: (state, login) => {
+          state.isLogin = login;
+        },
       },
       actions: {
         setFeedback: ({ commit }, payload) => {
           commit("SET_FEED_BACK", payload);
-        }
-      }
-
+        },
+        setUser: ({ commit }, payload) => {
+          commit("SET_LOGIN_IN", payload === null);
+          if (payload) {
+            commit("SET_USER", payload);
+          } else {
+            commit("SET_USER", null);
+          }
+        },
+      },
     },
-
-  }
+  },
 });
