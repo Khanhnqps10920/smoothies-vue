@@ -7,7 +7,6 @@ import firebase from "firebase";
 
 Vue.config.productionTip = false;
 firebase.auth().onAuthStateChanged(user => {
-  console.log(user);
   store.dispatch("auth/setUser", user);
 });
 new Vue({

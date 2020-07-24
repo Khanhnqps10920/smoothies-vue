@@ -28,7 +28,7 @@
           <span class="btn-floating btn-large halfway-fab purple darken-1">
             <router-link :to="{
                 name: 'editSmoothie'
-              }">
+            }">
               <i class="material-icons edit">edit</i>
             </router-link>
           </span>
@@ -40,6 +40,7 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
+import database from "../../firebase/init";
 
 export default {
   // data
@@ -52,7 +53,21 @@ export default {
   },
   // methods
   methods: {
-    ...mapActions("smoothies", ["fetchSmoothies"])
+    ...mapActions("smoothies", ["fetchSmoothies"]),
+    deleteSmoothie(smoothieId) {
+      const ref = database.collection("smoothies").doc(smoothieId);
+      if (ref) {
+        ref
+          .delete()
+          .then(() => {
+            this.fetchSmoothies();
+            console.log("document deleted");
+          })
+          .catch(e => {
+            console.log(e);
+          });
+      }
+    }
   },
   // created
   created() {

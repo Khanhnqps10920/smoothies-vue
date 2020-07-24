@@ -23,9 +23,13 @@
         </li>
       </ul>
 
-      <button class="btn-add btn-floating btn-large purple darken-1 halfway-fab">
+      <router-link
+        :to="{ name: 'addSmoothie' }"
+        v-if="isLogin"
+        class="btn-add btn-floating btn-large purple darken-1 halfway-fab"
+      >
         <i class="material-icons">add</i>
-      </button>
+      </router-link>
     </div>
   </nav>
 </template>

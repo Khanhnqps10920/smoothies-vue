@@ -162,8 +162,27 @@ export default new Vuex.Store({
           commit
         }, payload) => {
           commit("SET_LOGIN_IN", payload !== null);
+          // check if payload
           if (payload) {
-            commit("SET_USER", payload);
+            // query firebase
+            const docRef = database
+              .collection("users")
+              .where("user_id", "==", payload.uid);
+            // get doc by user id
+            docRef
+              .get()
+              .then(snapShot => {
+                // SET USER
+                snapShot.forEach(doc => {
+                  commit("SET_USER", doc.data());
+                });
+
+              })
+              .catch(e => {
+                console.log(e);
+                commit("SET_USER", null);
+              });
+
           } else {
             commit("SET_USER", null);
           }
