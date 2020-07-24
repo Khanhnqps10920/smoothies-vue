@@ -12,10 +12,13 @@
         <li>
           <router-link to="/gmap">Gmap</router-link>
         </li>
-        <li>
+        <li v-if="!isLogin">
           <router-link to="/login">Login</router-link>
         </li>
-        <li>
+        <li v-else>
+          <a @click="signout">Signout</a>
+        </li>
+        <li v-if="!isLogin">
           <router-link to="/register">Register</router-link>
         </li>
       </ul>
@@ -28,7 +31,26 @@
 </template>
 
 <script>
-export default {};
+import { mapState } from "vuex";
+import firebase from "firebase";
+export default {
+  computed: {
+    ...mapState("auth", ["isLogin"])
+  },
+  methods: {
+    signout() {
+      firebase
+        .auth()
+        .signOut()
+        .then(() => {
+          this.$router.push({ name: "login" });
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    }
+  }
+};
 </script>
 
 <style>

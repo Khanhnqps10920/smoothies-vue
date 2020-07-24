@@ -36,7 +36,6 @@ export default new Vuex.Store({
         },
         fetchListMessage: (state, payload) => {
           state.listMessage.push(payload);
-          state.loading = false;
         },
         setActive: (state) => {
           state.chatActive = !state.chatActive;
@@ -44,38 +43,51 @@ export default new Vuex.Store({
       },
       // actions
       actions: {
-        changeName: ({ commit }, payload) => {
+        changeName: ({
+          commit
+        }, payload) => {
           commit("changeName", payload);
         },
-        changeFeedBack: ({ commit }, payload) => {
+        changeFeedBack: ({
+          commit
+        }, payload) => {
           commit("changeFeedBack", payload);
         },
-        changeMessage: ({ commit }, payload) => {
+        changeMessage: ({
+          commit
+        }, payload) => {
           commit("changeMessage", payload);
         },
-        fetchListMessage: ({ commit }) => {
-          console.log(commit, database);
+        fetchListMessage: ({
+          commit
+        }) => {
           // watching for database by using docchanges
           try {
-            // let ref = database.collection("messages").orderBy("timestamp");
-            // ref.onSnapshot(snapShot => {
-            //   snapShot.docChanges().forEach(change => {
-            //     if (change.type === "added") {
-            //       let doc = change.doc;
-            //       commit("fetchListMessage", {
-            //         id: doc.id,
-            //         name: doc.data().name,
-            //         content: doc.data().content,
-            //         timestamp: doc.data().timestamp
-            //       });
-            //     }
-            //   });
-            // });
+
+            const messages = database.collection("messages").orderBy("timestamp");
+            messages.onSnapshot(snapShot => {
+              snapShot.docChanges().forEach(change => {
+                //check change type
+                if (change.type === "added") {
+                  const doc = change.doc;
+
+                  // commit
+                  commit("fetchListMessage", {
+                    id: doc.id,
+                    name: doc.data().name,
+                    content: doc.data().content,
+                    timestamp: doc.data().timestamp
+                  })
+                }
+              })
+            })
           } catch (e) {
             console.log(e);
           }
         },
-        setActive: ({ commit }) => {
+        setActive: ({
+          commit
+        }) => {
           commit("setActive");
         },
       },
@@ -98,7 +110,9 @@ export default new Vuex.Store({
         },
       },
       actions: {
-        fetchSmoothies: ({ commit }) => {
+        fetchSmoothies: ({
+          commit
+        }) => {
           // get collections
 
           database
@@ -139,11 +153,15 @@ export default new Vuex.Store({
         },
       },
       actions: {
-        setFeedback: ({ commit }, payload) => {
+        setFeedback: ({
+          commit
+        }, payload) => {
           commit("SET_FEED_BACK", payload);
         },
-        setUser: ({ commit }, payload) => {
-          commit("SET_LOGIN_IN", payload === null);
+        setUser: ({
+          commit
+        }, payload) => {
+          commit("SET_LOGIN_IN", payload !== null);
           if (payload) {
             commit("SET_USER", payload);
           } else {

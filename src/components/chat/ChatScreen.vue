@@ -44,12 +44,12 @@ export default {
 
 <style>
 .chat span {
-  font-size: 1.4em;
+  font-size: 1em;
 }
 
 .chat .time {
   display: block;
-  font-size: 1.2em;
+  font-size: 0.8em;
 }
 
 .teal-text {
@@ -78,9 +78,9 @@ export default {
   width: 3px;
 }
 .chat .messages::-webkit-scrollbar-track {
-  width: 3px;
+  background: #ddd;
 }
 .chat .messages::-webkit-scrollbar-thumb {
-  width: 3px;
+  background: #aaa;
 }
 </style>

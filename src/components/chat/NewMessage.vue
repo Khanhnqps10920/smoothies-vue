@@ -15,6 +15,7 @@ import database from "../../firebase/init";
 export default {
   computed: {
     ...mapState("chat", ["name", "newMessage", "feedBack"]),
+    ...mapState("auth", ["isLogin", "user"]),
     bindMessage: {
       get() {
         return this.newMessage;
@@ -28,29 +29,33 @@ export default {
   methods: {
     ...mapActions("chat", ["changeMessage", "changeFeedBack"]),
     addMessage() {
-      if (this.newMessage) {
-        // reset feed back
-        this.changeFeedBack(null);
+      if (this.isLogin) {
+        if (this.newMessage) {
+          // reset feed back
+          this.changeFeedBack(null);
 
-        // add new message
-        database
-          .collection("messages")
-          .add({
-            content: this.newMessage,
-            name: this.name,
-            timestamp: Date.now()
-          })
-          .then(ref => {
-            console.log("add new document to collections message", ref.id);
-          })
-          .catch(e => {
-            console.log(e);
-          });
+          // add new message
+          database
+            .collection("messages")
+            .add({
+              content: this.newMessage,
+              name: this.user.email,
+              timestamp: Date.now()
+            })
+            .then(ref => {
+              console.log("add new document to collections message", ref.id);
+            })
+            .catch(e => {
+              console.log(e);
+            });
 
-        // reset new message
-        this.changeMessage(null);
+          // reset new message
+          this.changeMessage(null);
+        } else {
+          this.changeFeedBack("You must enter a message first");
+        }
       } else {
-        this.changeFeedBack("You must enter a message first");
+        this.changeFeedBack("You must sign in to chat");
       }
     }
   }
