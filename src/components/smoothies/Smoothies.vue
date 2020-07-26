@@ -17,7 +17,7 @@
       <div class="col s4" v-for="smoothie in smoothies" :key="smoothie.id">
         <div class="card">
           <div class="card-content">
-            <i class="material-icons delete" @click="deleteSmoothie(smoothie.id)">delete</i>
+            <a href="#" class="delete">{{ smoothie.author }}</a>
             <h2 class="indigo-text">{{ smoothie.title }}</h2>
             <ul class="ingredients">
               <li v-for="(ingredient,index) in smoothie.ingredients" :key="index">
@@ -25,16 +25,17 @@
               </li>
             </ul>
           </div>
-          <span class="btn-floating btn-large halfway-fab purple darken-1">
+          <span class="btn-floating wishlish-btn btn-large halfway-fab purple darken-1">
             <router-link :to="{
                 name: 'editSmoothie'
             }">
-              <i class="material-icons edit">edit</i>
+              <i class="material-icons edit">favorite_border</i>
             </router-link>
           </span>
         </div>
       </div>
     </div>
+    <div class="paginate"></div>
   </div>
 </template>
 
@@ -84,23 +85,27 @@ export default {
 .smoothies h2 {
   font-size: 1.8rem;
   text-align: center;
-  margin-top: 0;
+  margin-top: 20px;
 }
 
 .smoothies .ingredients {
   margin: 30px auto;
+  display: flex;
+  justify-content: center;
+  flex-flow: wrap;
 }
 
 .smoothies .ingredients li {
   display: inline-block;
 }
 
-.smoothies i.delete {
+.smoothies .delete {
   position: absolute;
-  top: 4px;
-  right: 4px;
+  top: 7px;
+  right: 7px;
   cursor: pointer;
   color: #aaa;
+  text-transform: capitalize;
 }
 
 .smoothies .preloader-wrapper {
@@ -111,6 +116,10 @@ export default {
 
 .smoothies .spinner-layer {
   border-color: #9c27b0;
+}
+
+.smoothies .wishlish-btn {
+  bottom: -15px !important;
 }
 
 .smoothies .card {

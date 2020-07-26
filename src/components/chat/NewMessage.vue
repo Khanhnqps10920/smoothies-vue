@@ -39,7 +39,7 @@ export default {
             .collection("messages")
             .add({
               content: this.newMessage,
-              name: this.user.email,
+              name: this.user.alias,
               timestamp: Date.now()
             })
             .then(ref => {

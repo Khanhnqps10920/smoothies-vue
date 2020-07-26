@@ -6,8 +6,8 @@
         <li>
           <router-link to="/">Home</router-link>
         </li>
-        <li>
-          <router-link to="/smoothies">Smoothies</router-link>
+        <li v-if="isLogin">
+          <router-link to="/smoothies">{{ user ? user.alias : ''}}</router-link>
         </li>
         <li>
           <router-link to="/gmap">Gmap</router-link>
@@ -39,7 +39,7 @@ import { mapState } from "vuex";
 import firebase from "firebase";
 export default {
   computed: {
-    ...mapState("auth", ["isLogin"])
+    ...mapState("auth", ["isLogin", "user"])
   },
   methods: {
     signout() {
