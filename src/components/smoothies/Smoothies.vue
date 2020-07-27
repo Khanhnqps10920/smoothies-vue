@@ -35,7 +35,16 @@
         </div>
       </div>
     </div>
-    <div class="paginate"></div>
+    <div class="paginate" v-if="!loading">
+      <span>
+        1
+        <ul>
+          <li>1</li>
+          <li>2</li>
+          <li>3</li>
+        </ul>
+      </span>
+    </div>
   </div>
 </template>
 
@@ -46,11 +55,17 @@ import database from "../../firebase/init";
 export default {
   // data
   data() {
-    return {};
+    return {
+      currentPage: 1,
+      limit: 6
+    };
   },
   // computed
   computed: {
-    ...mapState("smoothies", ["feedback", "smoothies", "loading"])
+    ...mapState("smoothies", ["feedback", "smoothies", "loading"]),
+    smoothiesTotal() {
+      return this.smoothies ? this.smoothies.length : 0;
+    }
   },
   // methods
   methods: {
@@ -123,6 +138,58 @@ export default {
 }
 
 .smoothies .card {
-  min-height: 250px;
+  min-height: 300px;
+}
+
+.paginate {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+  position: relative;
+}
+
+.paginate span {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  background: #9c27b0;
+  cursor: pointer;
+}
+
+.paginate ul {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  border: 0.1px solid black;
+  top: 15px;
+  transition: 0.4s ease;
+}
+
+.paginate ul li {
+  width: 29px;
+  height: 29px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 0.1px solid black;
+  color: black;
+  transition: 0.4s ease;
+}
+
+.paginate ul li:hover {
+  background: #9c27b0;
+  color: white;
+}
+
+.paginate ul li:last-child {
+  border: none;
+}
+
+.paginate span:hover ul {
+  visibility: visible;
+  opacity: 1;
 }
 </style>
