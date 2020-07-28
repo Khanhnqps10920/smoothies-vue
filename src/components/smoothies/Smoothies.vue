@@ -13,28 +13,41 @@
         </div>
       </div>
     </div>
-    <div class="row" v-else>
+    <transition-group
+      name="staggered-fade"
+      tag="div"
+      v-if="!loading"
+      class="row"
+      appear
+    >
       <div class="col s4" v-for="smoothie in smoothies" :key="smoothie.id">
         <div class="card">
           <div class="card-content">
             <a href="#" class="delete">{{ smoothie.author }}</a>
             <h2 class="indigo-text">{{ smoothie.title }}</h2>
             <ul class="ingredients">
-              <li v-for="(ingredient,index) in smoothie.ingredients" :key="index">
+              <li
+                v-for="(ingredient, index) in smoothie.ingredients"
+                :key="index"
+              >
                 <span class="chip">{{ ingredient }}</span>
               </li>
             </ul>
           </div>
-          <span class="btn-floating wishlish-btn btn-large halfway-fab purple darken-1">
-            <router-link :to="{
-                name: 'editSmoothie'
-            }">
+          <span
+            class="btn-floating wishlish-btn btn-large halfway-fab purple darken-1"
+          >
+            <router-link
+              :to="{
+                name: 'editSmoothie',
+              }"
+            >
               <i class="material-icons edit">favorite_border</i>
             </router-link>
           </span>
         </div>
       </div>
-    </div>
+    </transition-group>
     <div class="paginate" v-if="!loading">
       <span>
         1
@@ -57,7 +70,7 @@ export default {
   data() {
     return {
       currentPage: 1,
-      limit: 6
+      limit: 6,
     };
   },
   // computed
@@ -65,7 +78,7 @@ export default {
     ...mapState("smoothies", ["feedback", "smoothies", "loading"]),
     smoothiesTotal() {
       return this.smoothies ? this.smoothies.length : 0;
-    }
+    },
   },
   // methods
   methods: {
@@ -79,16 +92,18 @@ export default {
             this.fetchSmoothies();
             console.log("document deleted");
           })
-          .catch(e => {
+          .catch((e) => {
             console.log(e);
           });
       }
-    }
+    },
   },
   // created
   created() {
     this.fetchSmoothies();
-  }
+    console.log(this.$anime);
+  },
+  mounted() {},
 };
 </script>
 
@@ -191,5 +206,14 @@ export default {
 .paginate span:hover ul {
   visibility: visible;
   opacity: 1;
+}
+
+.staggered-fade-enter-active {
+  transition: all 2s ease;
+  transform: translateY(0);
+}
+.staggered-fade-enter,
+.staggered-fade-leave {
+  transform: translateY(200px);
 }
 </style>
