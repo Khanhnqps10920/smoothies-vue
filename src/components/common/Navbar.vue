@@ -7,7 +7,7 @@
           <router-link to="/">Home</router-link>
         </li>
         <li v-if="isLogin">
-          <router-link to="/smoothies">{{ user ? user.alias : ''}}</router-link>
+          <router-link to="/profile">{{ user ? user.alias : ''}}</router-link>
         </li>
         <li>
           <router-link to="/gmap">Gmap</router-link>

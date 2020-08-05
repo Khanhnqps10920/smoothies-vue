@@ -14,10 +14,10 @@
       </div>
     </div>
     <transition-group name="staggered-fade" tag="div" v-if="!loading" class="row" appear>
-      <div class="col s4" v-for="smoothie in smoothies" :key="smoothie.id">
+      <div class="col s4" v-for="smoothie in smoothiesByPage" :key="smoothie.id">
         <div class="card">
           <div class="card-content">
-            <a href="#" class="delete">{{ smoothie.author }}</a>
+            <a @click="handleAuthorClick(smoothie)" class="delete">{{ smoothie.author }}</a>
             <h2 class="indigo-text">{{ smoothie.title }}</h2>
             <ul class="ingredients">
               <li v-for="(ingredient, index) in smoothie.ingredients" :key="index">
@@ -27,7 +27,7 @@
           </div>
           <span class="btn-floating wishlish-btn btn-large halfway-fab purple darken-1">
             <router-link :to="{
-                name: 'editSmoothie',
+                name: 'login'
               }">
               <i class="material-icons edit">favorite_border</i>
             </router-link>
@@ -37,11 +37,9 @@
     </transition-group>
     <div class="paginate" v-if="!loading">
       <span>
-        1
+        {{ currentPage }}
         <ul>
-          <li>1</li>
-          <li>2</li>
-          <li>3</li>
+          <li v-for="page in smoothiesTotal" :key="page" @click="currentPage = page">{{ page }}</li>
         </ul>
       </span>
     </div>
@@ -63,8 +61,17 @@ export default {
   // computed
   computed: {
     ...mapState("smoothies", ["feedback", "smoothies", "loading"]),
+    ...mapState("auth", ["user"]),
+
     smoothiesTotal() {
-      return this.smoothies ? this.smoothies.length : 0;
+      return this.smoothies ? Math.ceil(this.smoothies.length / this.limit) : 0;
+    },
+
+    smoothiesByPage() {
+      return [...this.smoothies].slice(
+        (this.currentPage - 1) * this.limit,
+        this.currentPage * this.limit
+      );
     }
   },
   // methods
@@ -83,14 +90,30 @@ export default {
             console.log(e);
           });
       }
+    },
+
+    handleAuthorClick(smoothie) {
+      if (!this.user) {
+        this.$router.push({
+          name: "otherProfile",
+          params: { userId: smoothie.user_id }
+        });
+      } else {
+        if (this.user.user_id === smoothie.user_id) {
+          this.$router.push({ name: "profile" });
+        } else {
+          this.$router.push({
+            name: "otherProfile",
+            params: { userId: smoothie.user_id }
+          });
+        }
+      }
     }
   },
   // created
   created() {
     this.fetchSmoothies();
-    console.log(this.$anime);
-  },
-  mounted() {}
+  }
 };
 </script>
 

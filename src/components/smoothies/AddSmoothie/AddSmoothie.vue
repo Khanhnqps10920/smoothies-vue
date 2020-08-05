@@ -9,7 +9,7 @@
       <div class="field add-ingredient" v-for="(ingredient,index) in ingredients" :key="index">
         <label for="ingredient">Ingredient</label>
         <input type="text" name="ingredient" v-model="ingredients[index]" />
-        <i class="material-icons delete" @click="deleteIng(index)">delete</i>
+        <i class="material-icons delete-form" @click="deleteIng(index)">delete</i>
       </div>
 
       <div class="field add-ingredient">
@@ -108,7 +108,7 @@ export default {
   position: relative;
 }
 
-.add-smoothie .delete {
+.add-smoothie .delete-form {
   cursor: pointer;
   position: absolute;
   right: 0;
