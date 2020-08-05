@@ -48,7 +48,9 @@
         </div>
       </div>
     </div>
-
+    <transition name="user" appear>
+      <Comment v-if="!loading"></Comment>
+    </transition>
     <div v-if="modalActive" class="modal">
       <div class="modal-content center">
         <i class="material-icons">delete_forever</i>
@@ -74,7 +76,11 @@
 <script>
 import { mapState } from "vuex";
 import database from "../../firebase/init";
+import Comment from "../comment/Comment";
 export default {
+  components: {
+    Comment
+  },
   data() {
     return {
       loading: true,
