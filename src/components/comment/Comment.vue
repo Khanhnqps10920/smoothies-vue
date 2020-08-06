@@ -1,9 +1,9 @@
 <template>
   <div class="comment">
     <ul class="comments collection">
-      <li>
-        <div class="deep-purple-text"></div>
-        <div class="grey-text text-darken-2"></div>
+      <li v-for="(comment,index) in comments" :key="index">
+        <div class="deep-purple-text">{{ comment.from }}</div>
+        <div class="grey-text text-darken-2">{{ comment.content }}</div>
       </li>
     </ul>
 
@@ -11,20 +11,30 @@
       <div class="field">
         <label for="comment">Add Comment</label>
         <input type="text" name="comment" v-model="newComment" />
-        <p class="red-text center" v-if="feedback">{{feedback}}</p>
+        <p class="red-text center" v-if="feedback">{{ feedback }}</p>
       </div>
     </form>
   </div>
 </template>
 
 <script>
+import database from "../../firebase/init";
+import slugify from "slugify";
 import { mapState } from "vuex";
 
 export default {
+  props: {
+    userProp: {
+      type: Object,
+      default: null
+    }
+  },
+
   data() {
     return {
       newComment: null,
-      feedback: null
+      feedback: null,
+      comments: []
     };
   },
   computed: {
@@ -32,8 +42,82 @@ export default {
   },
   methods: {
     addComment() {
-      console.log(this.user.alias);
+      if (this.newComment) {
+        // check if user exist
+        if (this.user) {
+          const slug = slugify(this.user.alias, {
+            replacement: "-",
+            remove: /[$*_+~.()'"!\-:@]/g,
+            lower: true
+          });
+
+          this.feedback = null;
+          // check if userprop
+          if (this.userProp) {
+            database
+              .collection("comment")
+              .add({
+                from: slug,
+                to: this.userProp.id,
+                time: Date.now(),
+                content: this.newComment
+              })
+              .then(() => {
+                console.log("add new comment");
+                this.newComment = null;
+              })
+              .catch(e => console.log(e));
+          } else {
+            // slug
+
+            // add comment with current user
+            database
+              .collection("comment")
+              .add({
+                from: slug,
+                to: slug,
+                time: Date.now(),
+                content: this.newComment
+              })
+              .then(() => {
+                console.log("add new comment");
+                this.newComment = null;
+              })
+              .catch(e => console.log(e));
+          }
+        } else {
+          this.feedback = "You must login to commnet";
+        }
+      } else {
+        this.feedback = "you must enter a comment";
+      }
     }
+  },
+
+  created() {
+    // create slug
+    const slug = slugify(this.user.alias, {
+      replacement: "-",
+      remove: /[$*_+~.()'"!\-:@]/g,
+      lower: true
+    });
+    // get comment real time
+    const ref = database
+      .collection("comment")
+      .where("to", "==", this.userProp ? this.userProp.id : slug);
+
+    ref.onSnapshot(snapShot => {
+      snapShot.docChanges().forEach(change => {
+        // check change type
+        if (change.type === "added") {
+          const doc = change.doc;
+          this.comments.push({
+            id: doc.id,
+            ...doc.data()
+          });
+        }
+      });
+    });
   }
 };
 </script>

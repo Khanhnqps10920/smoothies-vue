@@ -8,6 +8,7 @@
         <h2 class="deep-purple-text center">{{ user ? user.alias : 'User' }}'s Wall</h2>
       </div>
     </transition>
+
     <div class="row">
       <div
         v-anime="{
@@ -45,13 +46,20 @@
         </div>
       </div>
     </div>
+
+    <transition name="user" appear>
+      <Comment :userProp="user" v-if="!loading"></Comment>
+    </transition>
   </div>
 </template>
 
 <script>
 import database from "../../firebase/init";
-
+import Comment from "../comment/Comment";
 export default {
+  components: {
+    Comment
+  },
   data() {
     return {
       loading: true,
@@ -91,6 +99,8 @@ export default {
           });
       })
       .catch(e => console.log(e));
+
+    console.log(this.user);
   }
 };
 </script>
