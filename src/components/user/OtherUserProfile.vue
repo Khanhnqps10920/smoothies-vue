@@ -10,40 +10,48 @@
     </transition>
 
     <div class="row">
-      <div
-        v-anime="{
+      <div class="col s8">
+        <div class="row">
+          <div
+            v-anime="{
           scale: [{ value: 0.8, duration: 0 }, { value: 1, duration: 300 }],
           opacity: [{ value: 0, duration: 0 }, { value: 1, duration: 250 }],
           translateX: [{ value: 170, duration: 0 }, { value: 0, duration: 1000 }],
           delay: 200 * index,
           easing: 'linear'
         }"
-        class="col s4"
-        v-for="(smoothie, index) in smoothies"
-        :key="smoothie.id"
-      >
-        <div class="card">
-          <div class="card-content">
-            <h2 class="indigo-text">{{ smoothie.title }}</h2>
-            <ul class="ingredients">
-              <li v-for="(ingredient, index) in smoothie.ingredients" :key="index">
-                <span class="chip">{{ ingredient }}</span>
-              </li>
-            </ul>
-          </div>
-          <span class="btn-floating wishlish-btn btn-large halfway-fab purple darken-1">
-            <router-link
-              :to="{
+            class="col s6"
+            v-for="(smoothie, index) in smoothies"
+            :key="smoothie.id"
+          >
+            <div class="card smoothie-card">
+              <div class="card-content">
+                <h2 class="indigo-text">{{ smoothie.title }}</h2>
+                <ul class="ingredients">
+                  <li v-for="(ingredient, index) in smoothie.ingredients" :key="index">
+                    <span class="chip">{{ ingredient }}</span>
+                  </li>
+                </ul>
+              </div>
+              <span class="btn-floating wishlish-btn btn-large halfway-fab purple darken-1">
+                <router-link
+                  :to="{
                 name: 'editSmoothie',
                 params: {
                   slug: smoothie.slug
                 }
               }"
-            >
-              <i class="material-icons edit">favorite_border</i>
-            </router-link>
-          </span>
+                >
+                  <i class="material-icons edit">favorite_border</i>
+                </router-link>
+              </span>
+            </div>
+          </div>
         </div>
+      </div>
+      <div class="col s4">
+        <p class="user-wishlish">User's Wishlish</p>
+        <Accordion></Accordion>
       </div>
     </div>
 
@@ -56,9 +64,12 @@
 <script>
 import database from "../../firebase/init";
 import Comment from "../comment/Comment";
+import Accordion from "../accordion/Accordion.vue";
+
 export default {
   components: {
-    Comment
+    Comment,
+    Accordion
   },
   data() {
     return {
@@ -111,6 +122,18 @@ export default {
 }
 .modal-leave-active {
   animation: popping 0.5s reverse;
+}
+
+.user-profile .card.smoothie-card {
+  min-height: 330px;
+}
+
+.user-wishlish {
+  margin: 10px;
+  font-size: 18px;
+  color: #8e24aa;
+  letter-spacing: 0.3rem;
+  border-bottom: 0.1px solid #8e24aa;
 }
 
 @keyframes popping {

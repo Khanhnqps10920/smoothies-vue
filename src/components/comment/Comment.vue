@@ -1,7 +1,7 @@
 <template>
   <div class="comment">
     <ul class="comments collection">
-      <li v-for="(comment,index) in comments" :key="index">
+      <li v-for="(comment,index) in commentByPage" :key="index">
         <div class="deep-purple-text">{{ comment.from }}</div>
         <div class="grey-text text-darken-2">{{ comment.content }}</div>
       </li>
@@ -14,6 +14,15 @@
         <p class="red-text center" v-if="feedback">{{ feedback }}</p>
       </div>
     </form>
+
+    <div class="paginate">
+      <span>
+        {{ currentPage }}
+        <ul>
+          <li v-for="page in totalComment" :key="page" @click="currentPage = page">{{ page }}</li>
+        </ul>
+      </span>
+    </div>
   </div>
 </template>
 
@@ -34,11 +43,22 @@ export default {
     return {
       newComment: null,
       feedback: null,
-      comments: []
+      comments: [],
+      limit: 4,
+      currentPage: 1
     };
   },
   computed: {
-    ...mapState("auth", ["user"])
+    ...mapState("auth", ["user"]),
+    totalComment() {
+      return Math.ceil(this.comments.length / this.limit);
+    },
+    commentByPage() {
+      return this.comments.slice(
+        (this.currentPage - 1) * this.limit,
+        this.currentPage * this.limit
+      );
+    }
   },
   methods: {
     addComment() {
@@ -124,7 +144,7 @@ export default {
 
 <style>
 .comment {
-  margin-top: 40px;
+  margin: 40px 0;
 }
 
 .comments li {
