@@ -67,7 +67,8 @@ export default {
                   .set({
                     alias: this.alias,
                     geoLocation: null,
-                    user_id: cred.user.uid
+                    user_id: cred.user.uid,
+                    wishLish: []
                   })
                   .then(() => {
                     this.$router.push({ name: "Home" });

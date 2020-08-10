@@ -51,13 +51,15 @@
           </div>
         </div>
       </div>
-      <div class="col s4">
-        <p class="user-wishlish">User's Wishlish</p>
-        <Accordion></Accordion>
-      </div>
+      <transition name="user" appear>
+        <div class="col s4" v-if="!loading">
+          <p class="user-wishlish">User's Wishlish</p>
+          <Accordion v-for="(item,index) in user.wishLish" :key="index" :item="item"></Accordion>
+        </div>
+      </transition>
     </div>
-    <transition name="user" appear>
-      <Comment v-if="!loading"></Comment>
+    <transition name="user" appear v-if="!loading">
+      <Comment></Comment>
     </transition>
     <div v-if="modalActive" class="modal">
       <div class="modal-content center">

@@ -174,7 +174,10 @@ export default new Vuex.Store({
               .then(snapShot => {
                 // SET USER
                 snapShot.forEach(doc => {
-                  commit("SET_USER", doc.data());
+                  commit("SET_USER", {
+                    id: doc.id,
+                    ...doc.data()
+                  });
                 });
 
               })

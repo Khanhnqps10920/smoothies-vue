@@ -25,12 +25,11 @@
               </li>
             </ul>
           </div>
-          <span class="btn-floating wishlish-btn btn-large halfway-fab purple darken-1">
-            <router-link :to="{
-                name: 'login'
-              }">
-              <i class="material-icons edit">favorite_border</i>
-            </router-link>
+          <span
+            @click="handleWishLishAdd(smoothie)"
+            class="btn-floating wishlish-btn btn-large halfway-fab purple darken-1"
+          >
+            <i class="material-icons edit">favorite_border</i>
           </span>
         </div>
       </div>
@@ -42,6 +41,18 @@
           <li v-for="page in smoothiesTotal" :key="page" @click="currentPage = page">{{ page }}</li>
         </ul>
       </span>
+    </div>
+
+    <div v-if="modalActive" class="modal">
+      <div class="modal-content center">
+        <i class="material-icons">error</i>
+        <p>
+          <span class="red-text">{{ feedbackModal }}</span>
+        </p>
+      </div>
+      <div class="modal-footer">
+        <a @click="modalActive = false" class="modal-close waves-effect waves-green btn-flat">Close</a>
+      </div>
     </div>
   </div>
 </template>
@@ -55,7 +66,9 @@ export default {
   data() {
     return {
       currentPage: 1,
-      limit: 6
+      limit: 6,
+      modalActive: false,
+      feedbackModal: null
     };
   },
   // computed
@@ -77,6 +90,8 @@ export default {
   // methods
   methods: {
     ...mapActions("smoothies", ["fetchSmoothies"]),
+
+    // DELETE SMOOTHIE
     deleteSmoothie(smoothieId) {
       const ref = database.collection("smoothies").doc(smoothieId);
       if (ref) {
@@ -92,6 +107,7 @@ export default {
       }
     },
 
+    // HANDLE AUTHOR
     handleAuthorClick(smoothie) {
       if (!this.user) {
         this.$router.push({
@@ -107,6 +123,39 @@ export default {
             params: { userId: smoothie.user_id }
           });
         }
+      }
+    },
+    // HANDLE ADD SMOOTHIE TO WISHLISH
+    handleWishLishAdd(smoothie) {
+      if (this.user) {
+        const smoothieIndex = this.user.wishLish.findIndex(
+          item => item.id === smoothie.id
+        );
+
+        // check if smoothie exist
+        if (smoothieIndex === -1) {
+          this.feedbackModal = null;
+          this.user.wishLish.push(smoothie);
+
+          database
+            .collection("users")
+            .doc(this.user.id)
+            .update({
+              wishLish: this.user.wishLish
+            })
+            .then(() => {
+              window.alert("add wishlish success");
+            })
+            .catch(e => {
+              console.log(e);
+            });
+        } else {
+          this.feedbackModal = "This smoothie is already in your wishlish";
+          this.modalActive = true;
+        }
+      } else {
+        this.feedbackModal = "You need to login first";
+        this.modalActive = true;
       }
     }
   },
