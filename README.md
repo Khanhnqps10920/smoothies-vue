@@ -1,5 +1,7 @@
 # smoothies-vue
 
+This project make for learn Vue
+
 ## Project setup
 ```
 yarn install
